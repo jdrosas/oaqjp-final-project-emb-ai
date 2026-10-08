@@ -1,4 +1,6 @@
 import requests
+from emotion_detection import emotion_detector
+__all__ = ["emotion_detector"]
 
 def emotion_detector(text_to_analyse):
     """Detect emotions in the supplied text using the Watson NLP API."""
