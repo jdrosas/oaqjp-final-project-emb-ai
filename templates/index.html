@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detection</title>
+</head>
+<body>
+
+    <h1>Emotion Detection Application</h1>
+
+    <form id="emotionForm">
+        <label for="textToAnalyse">
+            Enter text to analyse:
+        </label>
+
+        <br><br>
+
+        <input
+            type="text"
+            id="textToAnalyse"
+            name="text"
+            size="60"
+            placeholder="Enter your text here"
+        >
+
+        <button type="submit">Analyse</button>
+    </form>
+
+    <br>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById("emotionForm").addEventListener(
+            "submit",
+            async function(event) {
+                event.preventDefault();
+
+                const text = document.getElementById(
+                    "textToAnalyse"
+                ).value;
+
+                const resultDiv = document.getElementById("result");
+
+                if (!text.trim()) {
+                    resultDiv.innerHTML =
+                        "<p>Invalid input. Please provide text to analyse.</p>";
+                    return;
+                }
+
+                try {
+                    const response = await fetch(
+                        "/emotionDetector?text=" +
+                        encodeURIComponent(text)
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        resultDiv.innerHTML =
+                            "<p>" + data.error + "</p>";
+                        return;
+                    }
+
+                    resultDiv.innerHTML =
+                        "<p><strong>Anger:</strong> " +
+                        data.anger + "</p>" +
+                        "<p><strong>Disgust:</strong> " +
+                        data.disgust + "</p>" +
+                        "<p><strong>Fear:</strong> " +
+                        data.fear + "</p>" +
+                        "<p><strong>Joy:</strong> " +
+                        data.joy + "</p>" +
+                        "<p><strong>Sadness:</strong> " +
+                        data.sadness + "</p>" +
+                        "<p><strong>Dominant emotion:</strong> " +
+                        data.dominant_emotion + "</p>";
+                } catch (error) {
+                    resultDiv.innerHTML =
+                        "<p>An error occurred while processing the request.</p>";
+                }
+            }
+        );
+    </script>
+
+</body>
+</html>
